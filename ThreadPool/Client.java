@@ -1,14 +1,12 @@
-package ThreadPool;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-
 import java.net.InetAddress;
 import java.net.Socket;
 
 public class Client {
+
     public Runnable getRunnable() {
         return new Runnable() {
             @Override
@@ -36,26 +34,22 @@ public class Client {
             }
         };
     }
-    
-
-
 
     public static void main(String[] args) {
+        Client client = new Client();
 
-        Client client=new Client();
-        long start=System.currentTimeMillis();
-        for(int i=0;i<100;i++){
+        long startTime = System.currentTimeMillis(); // Start time tracking
+
+        for (int i = 0; i < 100; i++) { // 100 clients
             try {
-                Thread thread=new Thread(client.getRunnable());
+                Thread thread = new Thread(client.getRunnable());
                 thread.start();
             } catch (Exception e) {
-               return;
+                return;
             }
         }
-       long end=System.currentTimeMillis();
-       System.out.println("total time taken "+(end-start)+" ms");
-        
 
+        long endTime = System.currentTimeMillis(); // End time tracking
+        System.out.println("Total time taken: " + (endTime - startTime) + " ms");
     }
-    
 }

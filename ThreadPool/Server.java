@@ -13,14 +13,19 @@ public class Server {
 
     public Server(int poolsize) {
         this.threadPool = Executors.newFixedThreadPool(poolsize);
-
     }
 
-    public void handleClient(Socket clienSocket){
-        try(PrintWriter toSocket=new PrintWriter(clienSocket.getOutputStream(), true)){
-            toSocket.println("Hello from Server Astomishing"+clienSocket.getInetAddress());
-        }catch(IOException e){
+    public void handleClient(Socket clientSocket) { // Fixed variable name
+        try (PrintWriter toSocket = new PrintWriter(clientSocket.getOutputStream(), true)) {
+            toSocket.println("Hello from Server Astonishing " + clientSocket.getInetAddress());
+        } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                clientSocket.close(); // Ensuring client socket is closed properly
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -30,22 +35,16 @@ public class Server {
         Server server = new Server(poolsize);
 
         try {
-            ServerSocket serverSocket=new ServerSocket(port);
+            ServerSocket serverSocket = new ServerSocket(port);
             serverSocket.setSoTimeout(70000);
-            System.out.println("server is listening on port"+port);
+            System.out.println("server is listening on port " + port); // Fixed spacing
 
             while (true) {
-                Socket clienSocket=serverSocket.accept();
-
-                server.threadPool.execute(()->server.handleClient(clienSocket));
-                
+                Socket clientSocket = serverSocket.accept(); // Fixed variable name
+                server.threadPool.execute(() -> server.handleClient(clientSocket));
             }
-        } catch (IOException e) {e.printStackTrace();
-           
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        finally{
-            
-        }
-
     }
 }
