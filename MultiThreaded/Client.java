@@ -37,6 +37,7 @@ public class Client {
 
     public static void main(String[] args) {
         Client client = new Client();
+        long startTime= System.currentTimeMillis();
         for (int i = 0; i < 100; i++) {
             try {
                 Thread thread = new Thread(client.getRunnable());
@@ -45,5 +46,7 @@ public class Client {
                 return;
             }
         }
+        long endTime=System.currentTimeMillis();
+        System.out.println("time taken in ms "+(endTime-startTime));
     }
 }

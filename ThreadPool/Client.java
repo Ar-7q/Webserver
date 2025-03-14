@@ -14,19 +14,13 @@ public class Client {
                 int port = 8010;
                 try {
                     InetAddress address = InetAddress.getByName("localhost");
-                    Socket socket = new Socket(address, port);
-                    try (
-                            PrintWriter toSocket = new PrintWriter(socket.getOutputStream(), true); // AutoFlush enabled
-                            BufferedReader fromSocket = new BufferedReader(
-                                    new InputStreamReader(socket.getInputStream()))) {
+                    try (Socket socket = new Socket(address, port); // Auto-close socket
+                         PrintWriter toSocket = new PrintWriter(socket.getOutputStream(), true); 
+                         BufferedReader fromSocket = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
                         toSocket.println("hello from client"); // Sending request
                         String line = fromSocket.readLine(); // Receiving response
                         System.out.println("response from server: " + line);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } finally {
-                        socket.close(); // Ensure socket is closed properly
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -40,16 +34,16 @@ public class Client {
 
         long startTime = System.currentTimeMillis(); // Start time tracking
 
-        for (int i = 0; i < 100; i++) { // 100 clients
+        for (int i = 0; i < 100000; i++) { // 100 clients
             try {
                 Thread thread = new Thread(client.getRunnable());
                 thread.start();
             } catch (Exception e) {
-                return;
+                e.printStackTrace();
             }
         }
 
-        long endTime = System.currentTimeMillis(); // End time tracking
+        long endTime = System.currentTimeMillis(); // End time tracking (after starting all threads)
         System.out.println("Total time taken: " + (endTime - startTime) + " ms");
     }
 }
